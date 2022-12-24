@@ -14,7 +14,12 @@
 </script>
 
 <div class="TeamScore">
-  <input type="text" bind:value={team.name} on:input={raiseChange} class="team-name" />
+  <input
+    type="text"
+    bind:value={team.name}
+    on:input={raiseChange}
+    class="team-name"
+  />
   <div class="score">{team.score.toFixed(0)}</div>
   <button type="button" on:click={() => changeScoreBy(1)}>+</button>
   <button type="button" on:click={() => changeScoreBy(-1)}>-</button>

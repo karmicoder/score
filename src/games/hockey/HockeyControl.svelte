@@ -18,7 +18,8 @@
       type="text"
       name="duration"
       bind:value={durationString}
-      on:change={() => ($hockeyGame.periodTimeRemaing = moment.duration(durationString))}
+      on:change={() =>
+        ($hockeyGame.periodTimeRemaing = moment.duration(durationString))}
     />
   </div>
   <GameClock />

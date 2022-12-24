@@ -59,8 +59,12 @@
         .padStart(2, '0')}{/if}
   </div>
   <div class="actions">
-    <button type="button" on:click={handleStart} disabled={isRunning || isHorn}>Start</button>
-    <button type="button" on:click={handlePause} disabled={!isRunning}>Stop</button>
+    <button type="button" on:click={handleStart} disabled={isRunning || isHorn}
+      >Start</button
+    >
+    <button type="button" on:click={handlePause} disabled={!isRunning}
+      >Stop</button
+    >
     <button type="button" on:click={handleReset}>Reset</button>
   </div>
   {#if isHorn}Horn!{/if}

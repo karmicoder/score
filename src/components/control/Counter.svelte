@@ -15,10 +15,14 @@
 <div class="Counter">
   <input type="text" bind:value={label} class="label" />
   <div class="score">{value.toFixed(0)}</div>
-  <button type="button" disabled={max !== undefined && value >= max} on:click={() => changeBy(1)}
-    >+</button
+  <button
+    type="button"
+    disabled={max !== undefined && value >= max}
+    on:click={() => changeBy(1)}>+</button
   >
-  <button type="button" disabled={value <= min} on:click={() => changeBy(-1)}>-</button>
+  <button type="button" disabled={value <= min} on:click={() => changeBy(-1)}
+    >-</button
+  >
 </div>
 
 <style lang="scss">
