@@ -8,3 +8,12 @@ export let game = writable<GameState>({
   periodTimeRemaing: moment.duration(0),
   teams: []
 });
+
+export let horn = writable<boolean>(false);
+
+export function triggerHornFor(durationMs = 3000) {
+  horn.set(true);
+  setTimeout(() => {
+    horn.set(false);
+  }, durationMs);
+}

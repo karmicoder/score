@@ -5,24 +5,29 @@
 </script>
 
 <script lang="ts">
+  import Button from '@smui/button';
+  import Card from '@smui/card';
+
   import moment from 'moment';
-  import { game } from 'src/lib/game.store';
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher<{ horn: () => void }>();
-  const interval = 1000 / 60; // 1/60 sec
+  import { game, horn, triggerHornFor } from 'src/lib/game.store';
+
+  const HORN_DURATION = 3000;
+
+  const interval = 1000 / 100;
   let remainingDuration = $game.periodTimeRemaing;
 
   let intervalRef: NodeJS.Timer | undefined;
   let lastIntervalTime: moment.Moment | undefined;
   $: {
     if (remainingDuration.asMilliseconds() <= 0) {
+      if (intervalRef) {
+        triggerHornFor();
+      }
       remainingDuration = moment.duration(0);
       handlePause();
-      dispatch('horn');
     }
   }
   $: isRunning = !!intervalRef;
-  $: isHorn = remainingDuration.asMilliseconds() <= 0;
 
   let handleStart = () => {
     lastIntervalTime = moment();
@@ -44,7 +49,7 @@
   };
 </script>
 
-<div class="GameClock">
+<div class="GameClock mdc-card padded">
   <div class="display">
     {#if remainingDuration.asHours() >= 1}{formatTimePart(
         remainingDuration.hours()
@@ -59,15 +64,10 @@
         .padStart(2, '0')}{/if}
   </div>
   <div class="actions">
-    <button type="button" on:click={handleStart} disabled={isRunning || isHorn}
-      >Start</button
-    >
-    <button type="button" on:click={handlePause} disabled={!isRunning}
-      >Stop</button
-    >
-    <button type="button" on:click={handleReset}>Reset</button>
+    <Button type="button" on:click={handleStart} disabled={isRunning || $horn}>Start</Button>
+    <Button type="button" on:click={handlePause} disabled={!isRunning}>Stop</Button>
+    <Button type="button" on:click={handleReset}>Reset</Button>
   </div>
-  {#if isHorn}Horn!{/if}
 </div>
 
 <style lang="scss">
@@ -80,7 +80,6 @@
       font-size: 2rem;
       font-family: monospace;
       text-align: center;
-      border: 1px solid orange;
     }
 
     .actions {

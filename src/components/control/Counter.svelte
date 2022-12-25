@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  // let dispatch = createEventDispatcher<{ change: TeamState }>();
+  import IconButton from '@smui/icon-button';
   export let value: number;
-  export let label: string;
 
   export let min: number = 0;
   export let max: number | undefined = undefined;
+  export let step: number = 1;
 
   function changeBy(amount: number) {
     value += amount;
@@ -13,26 +12,34 @@
 </script>
 
 <div class="Counter">
-  <input type="text" bind:value={label} class="label" />
-  <div class="score">{value.toFixed(0)}</div>
-  <button
-    type="button"
+  <IconButton
+    touch
+    size="mini"
+    class="material-icons"
     disabled={max !== undefined && value >= max}
-    on:click={() => changeBy(1)}>+</button
-  >
-  <button type="button" disabled={value <= min} on:click={() => changeBy(-1)}
-    >-</button
-  >
+    on:click={() => changeBy(step)}>
+    add
+  </IconButton>
+  <div class="score">{value.toFixed(0)}</div>
+  <IconButton
+    size="mini"
+    class="material-icons"
+    touch
+    disabled={value <= min}
+    on:click={() => changeBy(-step)}>remove</IconButton>
 </div>
 
 <style lang="scss">
   .Counter {
-    input.label {
-      border: none;
-      font-size: 1.5rem;
-      &:focus {
-        outline-color: var(--input-outline-focus);
-      }
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    .score {
+      font-family: monospace;
+      font-size: 2.5rem;
+      margin: 0 1rem;
+      width: 4rem;
+      text-align: center;
     }
   }
 </style>
