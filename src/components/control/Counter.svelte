@@ -2,9 +2,9 @@
   import IconButton from '@smui/icon-button';
   export let value: number;
 
-  export let min: number = 0;
+  export let min = 0;
   export let max: number | undefined = undefined;
-  export let step: number = 1;
+  export let step = 1;
 
   function changeBy(amount: number) {
     value += amount;

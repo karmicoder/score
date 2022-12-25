@@ -6,12 +6,9 @@
 
 <script lang="ts">
   import Button from '@smui/button';
-  import Card from '@smui/card';
 
   import moment from 'moment';
   import { game, horn, triggerHornFor } from 'src/lib/game.store';
-
-  const HORN_DURATION = 3000;
 
   const interval = 1000 / 100;
   let remainingDuration = $game.periodTimeRemaing;
