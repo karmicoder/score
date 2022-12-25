@@ -9,6 +9,7 @@
   import ShotsOnGoal from './ShotsOnGoal.svelte';
   import { isHockeyGame } from '.';
   import HornButton from 'src/components/control/HornButton.svelte';
+  import PeriodToggle from 'src/components/control/PeriodToggle.svelte';
   let durationString = $pendingPeriodTime?.toISOString() || 'PT20M';
   let hockeyGame = isHockeyGame($game) ? game : undefined;
 </script>
@@ -25,6 +26,9 @@
     </Card>
     <GameClock />
     <HornButton />
+    <Card padded>
+      <PeriodToggle periodCount={3} bind:value={$hockeyGame.periodNumber} />
+    </Card>
     {#each $game.teams || [] as team, index}
       <Card padded class="Team">
         <Textfield
@@ -60,9 +64,6 @@
     padding: 1rem;
     :global(> *) {
       flex: 11 1 15rem;
-    }
-    > pre {
-      flex-basis: 100%;
     }
   }
 </style>

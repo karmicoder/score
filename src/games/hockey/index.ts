@@ -17,6 +17,7 @@ export function createTeam(name: string): HockeyTeamState {
 export function createGame(opts?: Partial<GameState>): HockeyGameState {
   return {
     periodTimeRemaing: moment.duration(20, 'minute'),
+    periodNumber: 1,
     teams: [createTeam('Home'), createTeam('Visitor')],
     ...opts,
     sport: 'hockey'

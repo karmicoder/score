@@ -5,6 +5,7 @@
     }
   ],
   "settings": {
+    "editor.tabSize": 2,
     "svelte.enable-ts-plugin": true,
     "svelte.plugin.svelte.note-new-transformation": false,
     "editor.formatOnSave": true,

@@ -4,7 +4,7 @@ import { get, writable } from 'svelte/store';
 
 export let game = writable<GameState>({
   sport: 'none',
-  periodNumber: 0,
+  periodNumber: 1,
   periodTimeRemaing: moment.duration(0),
   teams: []
 });
@@ -29,6 +29,6 @@ export function startPeriodTimer(): NodeJS.Timer {
       .clone()
       .subtract(moment().diff(lastIntervalTime, 'ms'), 'ms');
     lastIntervalTime = moment();
-    game.set(currentGame);
+    game.set({ ...currentGame });
   }, interval);
 }

@@ -5,6 +5,7 @@
   export let min = 0;
   export let max: number | undefined = undefined;
   export let step = 1;
+  export let displayValueFn = (value: number) => value.toFixed(0);
 
   function changeBy(amount: number) {
     value += amount;
@@ -20,7 +21,7 @@
     on:click={() => changeBy(step)}>
     add
   </IconButton>
-  <div class="score">{value.toFixed(0)}</div>
+  <div class="score">{displayValueFn(value)}</div>
   <IconButton
     size="mini"
     class="material-icons"

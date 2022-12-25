@@ -24,8 +24,10 @@ export type Infraction =
   | 'high-sticking'
   | 'fighting';
 
+export type PenaltyType = 'minor' | 'major' | 'misconduct' | 'game misconduct' | 'match';
+
 export interface Penalty {
-  type: 'minor' | 'major' | 'misconduct' | 'game misconduct' | 'match';
+  type: PenaltyType;
   periodAt: number;
   timeAt: moment.Duration;
   playerNumber?: number; // undefined = bench

@@ -1,9 +1,3 @@
-<script lang="ts" context="module">
-  function formatTimePart(timePart: number) {
-    return timePart.toString().padStart(2, '0');
-  }
-</script>
-
 <script lang="ts">
   import Button from '@smui/button';
 
@@ -15,16 +9,15 @@
     startPeriodTimer,
     triggerHornFor
   } from 'src/lib/game.store';
-
-  $: remainingDuration = $game.periodTimeRemaing;
+  import PeriodTime from 'src/components/PeriodTime.svelte';
 
   let intervalRef: NodeJS.Timer | undefined;
   $: {
-    if (remainingDuration.asMilliseconds() <= 0) {
+    if ($game.periodTimeRemaing.asMilliseconds() <= 0) {
       if (intervalRef) {
         triggerHornFor();
       }
-      remainingDuration = moment.duration(0);
+      $game.periodTimeRemaing = moment.duration(0);
       handlePause();
     }
   }
@@ -48,33 +41,21 @@
   let handleGlobalKeypress = (e: KeyboardEvent) => {
     console.log('handleGlobalKeypress', e);
     if (e.code === 'Space') {
-      e.preventDefault();
       if (isRunning) {
         handlePause();
       } else {
         handleStart();
       }
     } else if (e.code === 'KeyR') {
-      e.preventDefault();
       handleReset();
     }
   };
 </script>
 
-<svelte:window on:keypress={handleGlobalKeypress} />
+<svelte:window on:keypress|capture={handleGlobalKeypress} />
 <div class="GameClock mdc-card padded">
   <div class="display">
-    {#if remainingDuration.asHours() >= 1}{formatTimePart(
-        remainingDuration.hours()
-      )}:{/if}{#if remainingDuration.asMinutes() >= 1}{formatTimePart(
-        remainingDuration.minutes()
-      )}:{/if}{formatTimePart(
-      remainingDuration.seconds()
-    )}{#if remainingDuration.asMinutes() < 1}.{remainingDuration
-        .milliseconds()
-        .toString()
-        .slice(0, 2)
-        .padStart(2, '0')}{/if}
+    <PeriodTime value={$game.periodTimeRemaing} />
   </div>
   <div class="actions">
     <Button type="button" on:click={handleStart} disabled={isRunning || $horn}>Start</Button>
