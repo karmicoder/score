@@ -8,13 +8,17 @@
   import Button from '@smui/button';
 
   import moment from 'moment';
-  import { game, horn, triggerHornFor } from 'src/lib/game.store';
+  import {
+    game,
+    pendingPeriodTime,
+    horn,
+    startPeriodTimer,
+    triggerHornFor
+  } from 'src/lib/game.store';
 
-  const interval = 1000 / 100;
-  let remainingDuration = $game.periodTimeRemaing;
+  $: remainingDuration = $game.periodTimeRemaing;
 
   let intervalRef: NodeJS.Timer | undefined;
-  let lastIntervalTime: moment.Moment | undefined;
   $: {
     if (remainingDuration.asMilliseconds() <= 0) {
       if (intervalRef) {
@@ -27,13 +31,7 @@
   $: isRunning = !!intervalRef;
 
   let handleStart = () => {
-    lastIntervalTime = moment();
-    intervalRef = setInterval(() => {
-      remainingDuration = remainingDuration
-        .clone()
-        .subtract(moment().diff(lastIntervalTime, 'ms'), 'ms');
-      lastIntervalTime = moment();
-    }, interval);
+    intervalRef = startPeriodTimer();
   };
 
   let handlePause = () => {
@@ -42,10 +40,28 @@
   };
 
   let handleReset = () => {
-    remainingDuration = $game.periodTimeRemaing;
+    if ($pendingPeriodTime) {
+      $game.periodTimeRemaing = $pendingPeriodTime;
+    }
+  };
+
+  let handleGlobalKeypress = (e: KeyboardEvent) => {
+    console.log('handleGlobalKeypress', e);
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (isRunning) {
+        handlePause();
+      } else {
+        handleStart();
+      }
+    } else if (e.code === 'KeyR') {
+      e.preventDefault();
+      handleReset();
+    }
   };
 </script>
 
+<svelte:window on:keypress={handleGlobalKeypress} />
 <div class="GameClock mdc-card padded">
   <div class="display">
     {#if remainingDuration.asHours() >= 1}{formatTimePart(
@@ -84,9 +100,6 @@
       display: flex;
       column-gap: 1rem;
       justify-content: center;
-      button {
-        flex-grow: 1;
-      }
     }
   }
 </style>

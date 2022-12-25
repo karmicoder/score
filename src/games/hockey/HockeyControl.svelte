@@ -2,19 +2,18 @@
   import moment from 'moment';
   import Card from '@smui/card';
   import Textfield from '@smui/textfield';
-  import { game } from 'src/lib/game.store';
+  import { game, pendingPeriodTime } from 'src/lib/game.store';
   import Leader from 'src/components/control/Leader.svelte';
   import TeamScore from 'src/components/control/TeamScore.svelte';
   import GameClock from 'src/components/control/GameClock.svelte';
   import ShotsOnGoal from './ShotsOnGoal.svelte';
   import { isHockeyGame } from '.';
   import HornButton from 'src/components/control/HornButton.svelte';
-  let durationString = $game.periodTimeRemaing?.toISOString();
+  let durationString = $pendingPeriodTime?.toISOString() || 'PT20M';
   let hockeyGame = isHockeyGame($game) ? game : undefined;
 </script>
 
 <div class="HockeyControl">
-  <pre>{JSON.stringify($game, null, 2)}</pre>
   {#if hockeyGame}
     <Card padded>
       <Textfield
@@ -22,7 +21,7 @@
         name="duration"
         label="Duration"
         bind:value={durationString}
-        on:change={() => ($hockeyGame.periodTimeRemaing = moment.duration(durationString))} />
+        on:change={() => ($pendingPeriodTime = moment.duration(durationString))} />
     </Card>
     <GameClock />
     <HornButton />
@@ -40,7 +39,6 @@
             $game.teams[index].score = e.detail;
           }} />
         <ShotsOnGoal
-          teamName={team.name}
           value={team.shotsOnGoal}
           on:change={(e) => {
             console.log('shotsOnGoal change', { e, team });

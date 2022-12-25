@@ -32,5 +32,10 @@
 {#await sportDefPromise}
   <p>One Moment...</p>
 {:then sportDef}
-  <svelte:component this={sportDef.controlComponent} />
+  <section class="scoreboard">
+    <svelte:component this={sportDef.scoreboardComponent} />
+  </section>
+  <section class="control">
+    <svelte:component this={sportDef.controlComponent} />
+  </section>
 {/await}
