@@ -2,16 +2,25 @@
   import Button from '@smui/button';
 
   import moment from 'moment';
-  import {
-    game,
-    pendingPeriodTime,
-    horn,
-    startPeriodTimer,
-    triggerHornFor
-  } from 'src/lib/game.store';
+  import { game, pendingPeriodTime, horn, triggerHornFor } from 'src/lib/game.store';
   import PeriodTime from 'src/components/PeriodTime.svelte';
+  import { onDestroy } from 'svelte';
+  import { get } from 'svelte/store';
+  const interval = 1000 / 100;
 
-  let intervalRef: NodeJS.Timer | undefined;
+  export function startPeriodTimer() {
+    let lastIntervalTime = moment();
+    return setInterval(() => {
+      const currentGame = get(game);
+      currentGame.periodTimeRemaing = currentGame.periodTimeRemaing
+        .clone()
+        .subtract(moment().diff(lastIntervalTime, 'ms'), 'ms');
+      lastIntervalTime = moment();
+      game.set({ ...currentGame });
+    }, interval);
+  }
+
+  let intervalRef: unknown;
   $: {
     if ($game.periodTimeRemaing.asMilliseconds() <= 0) {
       if (intervalRef) {
@@ -28,7 +37,7 @@
   };
 
   let handlePause = () => {
-    clearInterval(intervalRef);
+    clearInterval(intervalRef as number);
     intervalRef = undefined;
   };
 
@@ -50,6 +59,10 @@
       handleReset();
     }
   };
+
+  onDestroy(() => {
+    clearInterval(intervalRef as number);
+  });
 </script>
 
 <svelte:window on:keypress|capture={handleGlobalKeypress} />
@@ -72,7 +85,8 @@
 
     .display {
       font-size: 2rem;
-      font-family: monospace;
+      line-height: 3rem;
+      font-family: 'CursedTimer', monospace;
       text-align: center;
     }
 

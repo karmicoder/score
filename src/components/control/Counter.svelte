@@ -36,7 +36,7 @@
     flex-flow: row nowrap;
     align-items: center;
     .score {
-      font-family: monospace;
+      font-family: CursedTimer;
       font-size: 2.5rem;
       margin: 0 1rem;
       width: 4rem;

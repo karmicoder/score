@@ -10,7 +10,7 @@ export interface GameDef {
 export interface GameState {
   sport: string;
   periodTimeRemaing: Duration;
-  periodNumber?: number;
+  periodNumber: number;
   teams: TeamState[];
 }
 

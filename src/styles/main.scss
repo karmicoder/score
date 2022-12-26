@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'CursedTimer';
+  src: url('/CursedTimerUlil-Aznm.woff2') format('woff2');
+}
+@import '@material/typography/mdc-typography';
 @import './typography.scss';
 @import './reset.scss';
 

@@ -2,7 +2,6 @@
   import { game, horn } from 'src/lib/game.store';
   import { createGame } from 'src/games/hockey/index';
   import { onMount } from 'svelte';
-  import type { PageData } from './$types';
   import type { GameDef } from 'src/types/game';
   import hornSound from './horn-blast.mp3';
   onMount(() => {

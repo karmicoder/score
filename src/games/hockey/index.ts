@@ -1,5 +1,5 @@
 import moment from 'moment';
-import type { GameDef, GameState } from 'src/types/game';
+import type { GameState } from 'src/types/game';
 import HockeyControl from './HockeyControl.svelte';
 import HockeyScoreboard from './HockeyScoreboard.svelte';
 import type { HockeyGameState, HockeyTeamState } from './HockeyGame';

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Card from '@smui/card';
   import Counter from 'src/components/control/Counter.svelte';
   import { createEventDispatcher } from 'svelte';
   export let value: number;

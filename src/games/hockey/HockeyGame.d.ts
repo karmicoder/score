@@ -17,14 +17,34 @@ export type Infraction =
   | 'hooking'
   | 'slashing'
   | 'cross-checking'
+  | 'delay of game'
+  | 'equipment violation'
+  | 'illegal substitution'
+  | 'charging'
+  | 'holding'
+  | 'holding the stick'
+  | 'tripping'
+  | 'elbowing'
+  | 'spearing'
   | 'roughing'
   | 'boarding'
   | 'too many men'
   | 'interference'
+  | 'goaltender interference'
+  | 'check to the head'
   | 'high-sticking'
+  | 'abuse of officials'
+  | 'instigating'
+  | 'embellishment'
   | 'fighting';
 
-export type PenaltyType = 'minor' | 'major' | 'misconduct' | 'game misconduct' | 'match';
+export type PenaltyType =
+  | 'minor'
+  | 'double minor'
+  | 'major'
+  | 'misconduct'
+  | 'game misconduct'
+  | 'match';
 
 export interface Penalty {
   type: PenaltyType;

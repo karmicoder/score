@@ -10,6 +10,7 @@
   import { isHockeyGame } from '.';
   import HornButton from 'src/components/control/HornButton.svelte';
   import PeriodToggle from 'src/components/control/PeriodToggle.svelte';
+  import PenaltyInput from './PenaltyInput.svelte';
   let durationString = $pendingPeriodTime?.toISOString() || 'PT20M';
   let hockeyGame = isHockeyGame($game) ? game : undefined;
 </script>
@@ -22,7 +23,8 @@
         name="duration"
         label="Duration"
         bind:value={durationString}
-        on:change={() => ($pendingPeriodTime = moment.duration(durationString))} />
+        on:change={() => ($pendingPeriodTime = moment.duration(durationString))}
+      />
     </Card>
     <GameClock />
     <HornButton />
@@ -36,18 +38,25 @@
           type="text"
           bind:value={team.name}
           on:change={(e) => ($game.teams[index].name = e.detail)}
-          class="team-name" />
+          class="team-name"
+        />
         <TeamScore
           score={team.score}
           on:change={(e) => {
             $game.teams[index].score = e.detail;
-          }} />
+          }}
+        />
         <ShotsOnGoal
           value={team.shotsOnGoal}
           on:change={(e) => {
             console.log('shotsOnGoal change', { e, team });
             $game.teams[index].shotsOnGoal = e.detail;
-          }} />
+          }}
+        />
+        <PenaltyInput
+          value={team.activePenalties}
+          on:change={(e) => ($game.teams[index].activePenalties = e.detail)}
+        />
       </Card>
     {/each}
     <Leader />
@@ -62,7 +71,8 @@
     flex-flow: row wrap;
     gap: 1rem;
     padding: 1rem;
-    :global(> *) {
+    align-items: flex-start;
+    :global(> .mdc-card) {
       flex: 11 1 15rem;
     }
   }
