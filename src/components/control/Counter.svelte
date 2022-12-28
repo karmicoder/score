@@ -18,7 +18,8 @@
     size="mini"
     class="material-icons"
     disabled={max !== undefined && value >= max}
-    on:click={() => changeBy(step)}>
+    on:click={() => changeBy(step)}
+  >
     add
   </IconButton>
   <div class="score">{displayValueFn(value)}</div>
@@ -27,7 +28,10 @@
     class="material-icons"
     touch
     disabled={value <= min}
-    on:click={() => changeBy(-step)}>remove</IconButton>
+    on:click={() => changeBy(-step)}
+  >
+    remove
+  </IconButton>
 </div>
 
 <style lang="scss">

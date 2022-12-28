@@ -46,7 +46,7 @@
           size="button"
           color="primary"
           class="material-icons"
-          on:click={(e) => handleDelete(index)}
+          on:click={() => handleDelete(index)}
         >
           delete
         </IconButton>

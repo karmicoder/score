@@ -9,7 +9,9 @@
     on:mousedown={() => ($horn = true)}
     on:mouseup={() => ($horn = false)}
     on:mousleave={() => ($horn = false)}
-    >{$horn ? 'notifications_active' : 'notifications'}</IconButton>
+  >
+    {$horn ? 'notifications_active' : 'notifications'}
+  </IconButton>
 </div>
 
 <style lang="scss">
