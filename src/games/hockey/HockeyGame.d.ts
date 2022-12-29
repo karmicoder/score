@@ -50,6 +50,6 @@ export interface Penalty {
   type: PenaltyType;
   periodAt: number;
   timeAt: moment.Duration;
-  playerNumber?: number; // undefined = bench
+  playerNumber?: string; // undefined = bench
   infraction: Infraction;
 }

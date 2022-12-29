@@ -9,6 +9,9 @@
     "svelte.enable-ts-plugin": true,
     "svelte.plugin.svelte.note-new-transformation": false,
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[svelte]": {
+      "editor.defaultFormatter": "svelte.svelte-vscode"
+    }
   }
 }

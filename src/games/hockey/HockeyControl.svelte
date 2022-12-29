@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import moment from 'moment';
   import Card from '@smui/card';
   import Textfield from '@smui/textfield';
@@ -11,8 +11,12 @@
   import HornButton from 'src/components/control/HornButton.svelte';
   import PeriodToggle from 'src/components/control/PeriodToggle.svelte';
   import PenaltyInput from './PenaltyInput.svelte';
+  import { penaltyController } from './Penalty';
+  import { onMount } from 'svelte';
   let durationString = $pendingPeriodTime?.toISOString() || 'PT20M';
   let hockeyGame = isHockeyGame($game) ? game : undefined;
+
+  onMount(penaltyController);
 </script>
 
 <div class="HockeyControl">
@@ -39,6 +43,8 @@
           bind:value={team.name}
           on:change={(e) => ($game.teams[index].name = e.detail)}
           class="team-name"
+          required
+          pattern="[A-Za-z0-9]+"
         />
         <TeamScore
           score={team.score}

@@ -5,3 +5,10 @@
 <div class="HockeyScoreboard">
   <pre>{JSON.stringify($game, null, 2)}</pre>
 </div>
+
+<style lang="scss">
+  pre {
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+</style>

@@ -7,22 +7,12 @@
   export let step = 1;
   export let displayValueFn = (value: number) => value.toFixed(0);
 
-  function changeBy(amount: number) {
+  const changeBy = (amount: number) => {
     value += amount;
-  }
+  };
 </script>
 
 <div class="Counter">
-  <IconButton
-    touch
-    size="mini"
-    class="material-icons"
-    disabled={max !== undefined && value >= max}
-    on:click={() => changeBy(step)}
-  >
-    add
-  </IconButton>
-  <div class="score">{displayValueFn(value)}</div>
   <IconButton
     size="mini"
     class="material-icons"
@@ -31,6 +21,16 @@
     on:click={() => changeBy(-step)}
   >
     remove
+  </IconButton>
+  <div class="score">{displayValueFn(value)}</div>
+  <IconButton
+    touch
+    size="mini"
+    class="material-icons"
+    disabled={max !== undefined && value >= max}
+    on:click={() => changeBy(step)}
+  >
+    add
   </IconButton>
 </div>
 
@@ -43,7 +43,6 @@
       font-family: CursedTimer;
       font-size: 2.5rem;
       margin: 0 1rem;
-      width: 4rem;
       text-align: center;
     }
   }
