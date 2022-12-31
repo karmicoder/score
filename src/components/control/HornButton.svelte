@@ -1,6 +1,5 @@
 <script lang="ts">
   import IconButton from '@smui/icon-button';
-  import moment from 'moment';
   import { game, horn, triggerHornFor } from 'src/lib/game.store';
   import { getTimerContext } from 'src/lib/timer.context';
 
@@ -19,7 +18,7 @@
     class="material-icons"
     on:mousedown={() => ($horn = true)}
     on:mouseup={() => ($horn = false)}
-    on:mousleave={() => ($horn = false)}
+    on:mouseout={() => ($horn = false)}
   >
     {$horn ? 'notifications_active' : 'notifications'}
   </IconButton>

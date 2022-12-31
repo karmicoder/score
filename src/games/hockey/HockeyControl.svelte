@@ -12,7 +12,6 @@
   import PenaltyInput from './PenaltyInput.svelte';
   import { penaltyController } from './Penalty';
   import { onMount } from 'svelte';
-  import { hockeyGame } from './hockeyGame.store';
   import { isHockeyGame } from '.';
   let durationString = $pendingPeriodTime
     ? moment.duration($pendingPeriodTime).toISOString()

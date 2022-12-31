@@ -1,4 +1,3 @@
-import type moment from 'moment';
 import type { GameState, TeamState } from 'src/types/game';
 
 export interface HockeyGameState extends GameState {

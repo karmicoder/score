@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { createTickListener } from 'src/lib/timer.context';
-import type { GameState } from 'src/types/game';
-import type { Penalty, PenaltyType, Infraction, HockeyGameState } from './HockeyGame';
+import type { PenaltyType, Infraction, HockeyGameState } from './HockeyGame';
 import { hockeyGame } from './hockeyGame.store';
 
 export function penaltyDurationFor(penaltyType: PenaltyType): moment.Duration {
