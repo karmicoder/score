@@ -1,15 +1,14 @@
-import moment, { type Duration } from 'moment';
 import type { GameState } from 'src/types/game';
 import { writable } from 'svelte/store';
 
 export let game = writable<GameState>({
   sport: 'none',
   periodNumber: 1,
-  periodTimeRemaing: moment.duration(0),
+  periodTimeRemaining: 0,
   teams: []
 });
 
-export let pendingPeriodTime = writable<Duration | undefined>(undefined);
+export let pendingPeriodTime = writable<number | undefined>(undefined);
 
 export let horn = writable<boolean>(false);
 

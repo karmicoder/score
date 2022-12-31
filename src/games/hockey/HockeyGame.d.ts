@@ -36,7 +36,8 @@ export type Infraction =
   | 'abuse of officials'
   | 'instigating'
   | 'embellishment'
-  | 'fighting';
+  | 'fighting'
+  | 'intent to injure';
 
 export type PenaltyType =
   | 'minor'
@@ -49,7 +50,8 @@ export type PenaltyType =
 export interface Penalty {
   type: PenaltyType;
   periodAt: number;
-  timeAt: moment.Duration;
+  timeAt: number;
   playerNumber?: string; // undefined = bench
   infraction: Infraction;
+  timeRemaining: number; // ms
 }

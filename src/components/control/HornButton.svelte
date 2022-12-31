@@ -1,6 +1,17 @@
 <script lang="ts">
   import IconButton from '@smui/icon-button';
-  import { horn } from 'src/lib/game.store';
+  import moment from 'moment';
+  import { game, horn, triggerHornFor } from 'src/lib/game.store';
+  import { getTimerContext } from 'src/lib/timer.context';
+
+  const timer = getTimerContext();
+  $: {
+    if ($game.periodTimeRemaining <= 0) {
+      timer.stop();
+      triggerHornFor();
+      $game.periodTimeRemaining = 0;
+    }
+  }
 </script>
 
 <div class="HornButton" class:horn-on={$horn}>

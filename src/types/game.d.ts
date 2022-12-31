@@ -1,5 +1,3 @@
-import type { Duration } from 'moment';
-
 export interface GameDef {
   createGame: (opts?: GameState) => GameState;
   createTeam: (name: string) => TeamState;
@@ -9,7 +7,7 @@ export interface GameDef {
 
 export interface GameState {
   sport: string;
-  periodTimeRemaing: Duration;
+  periodTimeRemaining: number;
   periodNumber: number;
   teams: TeamState[];
 }

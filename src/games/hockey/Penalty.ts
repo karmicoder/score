@@ -1,7 +1,7 @@
 import moment from 'moment';
-import { game } from 'src/lib/game.store';
+import { createTickListener } from 'src/lib/timer.context';
 import type { GameState } from 'src/types/game';
-import type { Penalty, PenaltyType, Infraction } from './HockeyGame';
+import type { Penalty, PenaltyType, Infraction, HockeyGameState } from './HockeyGame';
 import { hockeyGame } from './hockeyGame.store';
 
 export function penaltyDurationFor(penaltyType: PenaltyType): moment.Duration {
@@ -19,17 +19,6 @@ export function penaltyDurationFor(penaltyType: PenaltyType): moment.Duration {
     default:
       throw new Error('Invalid penaltyType: ' + penaltyType);
   }
-}
-
-export function penaltyTimeRemaining(game: GameState, penalty: Penalty): moment.Duration {
-  let samePeriod = game.periodNumber === penalty.periodAt;
-  const penaltyDuration = penaltyDurationFor(penalty.type);
-  if (samePeriod) {
-    return penaltyDuration.subtract(penalty.timeAt.clone().subtract(game.periodTimeRemaing));
-  }
-  return penaltyDuration
-    .subtract(moment.duration(20, 'minute').subtract(penalty.timeAt))
-    .subtract(moment.duration(20, 'minute').subtract(game.periodTimeRemaing));
 }
 
 export const penaltyTypes = [
@@ -65,21 +54,20 @@ export const infractions: Infraction[] = [
   'abuse of officials',
   'instigating',
   'embellishment',
-  'fighting'
+  'fighting',
+  'intent to injure'
 ];
 
 export function penaltyController() {
-  let runCount = 0;
-
-  return hockeyGame.subscribe(($hockeyGame) => {
-    ++runCount;
-    if (runCount % 100 !== 0) {
-      return;
-    }
+  let $hockeyGame: HockeyGameState | undefined;
+  hockeyGame.subscribe((game) => ($hockeyGame = game));
+  createTickListener((sinceLastTickMs) => {
     $hockeyGame?.teams.forEach((team) => {
-      team.activePenalties = team.activePenalties.filter(
-        (p) => penaltyTimeRemaining($hockeyGame, p).asMilliseconds() > 0
-      );
+      team.activePenalties = team.activePenalties.filter((p) => {
+        p.timeRemaining -= sinceLastTickMs;
+        return p.timeRemaining > 0;
+      });
+      return team;
     });
   });
 }

@@ -2,16 +2,18 @@
   import { createEventDispatcher } from 'svelte';
   import type { Penalty } from './HockeyGame';
   import Autocomplete from '@smui-extra/autocomplete';
-  import { infractions, penaltyTimeRemaining, penaltyTypes } from './Penalty';
+  import { infractions, penaltyDurationFor, penaltyTypes } from './Penalty';
   import { game } from 'src/lib/game.store';
   import PeriodTime from 'src/components/PeriodTime.svelte';
   import IconButton from '@smui/icon-button/src/IconButton.svelte';
   import Textfield from '@smui/textfield';
   import Select, { Option } from '@smui/select';
   import { titleCase } from 'src/lib/string';
-  // import { penaltyDurationFor } from './Penalty';
-  // import PeriodTime from 'src/components/PeriodTime.svelte';
+  import { flip } from 'svelte/animate';
+  import moment from 'moment';
+
   export let value: Penalty[] = [];
+  let addPenaltyForm: HTMLFormElement;
   const emptyPenalty: Partial<Penalty> = {
     type: 'minor',
     playerNumber: ''
@@ -21,13 +23,18 @@
   };
 
   const dispatcher = createEventDispatcher<{ change: Penalty[] }>();
-  const handleAddPenalty = () => {
+  const handleAddPenalty = (e: Event) => {
+    e.preventDefault();
+    if (!addPenaltyForm?.checkValidity()) {
+      return;
+    }
     const newValue: Penalty[] = [
       ...value,
       {
         ...(newPenalty as Penalty),
-        timeAt: $game.periodTimeRemaing,
-        periodAt: $game.periodNumber
+        timeAt: $game.periodTimeRemaining,
+        periodAt: $game.periodNumber,
+        timeRemaining: penaltyDurationFor(newPenalty.type || 'minor').asMilliseconds()
       }
     ];
     dispatcher('change', newValue);
@@ -43,15 +50,42 @@
 
 <div class="PenaltyInput">
   <h5>Penalties</h5>
+  <form class="new-penalty" on:submit={handleAddPenalty} bind:this={addPenaltyForm}>
+    <Textfield
+      variant="outlined"
+      type="text"
+      name="playerNumber"
+      label="P#"
+      bind:value={newPenalty.playerNumber}
+      pattern="[0-9]+"
+      input$maxLength="2"
+    />
+    <Select required variant="outlined" name="type" bind:value={newPenalty.type}>
+      {#each penaltyTypes as penaltyType}
+        <Option value={penaltyType}>{titleCase(penaltyType)}</Option>
+      {/each}
+    </Select>
+    <Autocomplete
+      name="infraction"
+      required
+      label="Infraction"
+      textfield$variant="outlined"
+      options={sortedInfractions}
+      clearOnBlur={false}
+      bind:value={newPenalty.infraction}
+      textfield$required
+    />
+    <IconButton type="submit" size="button" class="material-icons my-primary">add</IconButton>
+  </form>
   <div class="penalties">
-    {#each value as penalty, index}
-      <div class="penalty">
+    {#each value as penalty, index (penalty)}
+      <div class="penalty" animate:flip>
         <span class="time-remaining">
-          <PeriodTime value={penaltyTimeRemaining($game, penalty)} />
+          <PeriodTime value={moment.duration(penalty.timeRemaining, 'ms')} />
         </span>
-        {#if penalty.playerNumber !== undefined}<span class="player">
-            #{penalty.playerNumber}
-          </span>{:else}[BENCH]{/if}
+        <span class="player">
+          {#if penalty.playerNumber !== undefined && penalty.playerNumber !== ''}#{penalty.playerNumber}{:else}[BENCH]{/if}
+        </span>
         <span class="infraction">{penalty.infraction}</span>
         <IconButton
           size="button"
@@ -63,42 +97,10 @@
         </IconButton>
       </div>
     {/each}
-    <form class="new-penalty" on:submit={handleAddPenalty}>
-      <Textfield
-        required
-        variant="outlined"
-        type="text"
-        name="playerNumber"
-        label="P#"
-        bind:value={newPenalty.playerNumber}
-        pattern="[0-9]+"
-        min="0"
-        max="99"
-        input$maxLength="2"
-      />
-      <Select required variant="outlined" name="type" bind:value={newPenalty.type}>
-        {#each penaltyTypes as penaltyType}
-          <Option value={penaltyType}>{titleCase(penaltyType)}</Option>
-        {/each}
-      </Select>
-      <Autocomplete
-        name="infraction"
-        required
-        label="Infraction"
-        textfield$variant="outlined"
-        options={sortedInfractions}
-        bind:value={newPenalty.infraction}
-      />
-      <IconButton type="submit" size="button" color="primary" class="material-icons my-primary">
-        add
-      </IconButton>
-    </form>
   </div>
 </div>
 
 <style lang="scss">
-  @use '../../theme/smui-theme';
-
   @use '@material/theme/index' as theme;
 
   .PenaltyInput {
@@ -142,7 +144,8 @@
       }
 
       :global(.mdc-icon-button) {
-        @include theme.property(color, theme.$primary);
+        @include theme.property(background-color, theme.$primary);
+        height: 3.5rem;
       }
     }
   }

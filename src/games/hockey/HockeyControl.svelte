@@ -7,27 +7,32 @@
   import TeamScore from 'src/components/control/TeamScore.svelte';
   import GameClock from 'src/components/control/GameClock.svelte';
   import ShotsOnGoal from './ShotsOnGoal.svelte';
-  import { isHockeyGame } from '.';
   import HornButton from 'src/components/control/HornButton.svelte';
   import PeriodToggle from 'src/components/control/PeriodToggle.svelte';
   import PenaltyInput from './PenaltyInput.svelte';
   import { penaltyController } from './Penalty';
   import { onMount } from 'svelte';
-  let durationString = $pendingPeriodTime?.toISOString() || 'PT20M';
-  let hockeyGame = isHockeyGame($game) ? game : undefined;
+  import { hockeyGame } from './hockeyGame.store';
+  import { isHockeyGame } from '.';
+  let durationString = $pendingPeriodTime
+    ? moment.duration($pendingPeriodTime).toISOString()
+    : 'PT20M';
 
-  onMount(penaltyController);
+  penaltyController();
+  onMount(() => {
+    $pendingPeriodTime = moment.duration(20, 'minutes').asMilliseconds();
+  });
 </script>
 
 <div class="HockeyControl">
-  {#if hockeyGame}
+  {#if $hockeyGame}
     <Card padded>
       <Textfield
         type="text"
         name="duration"
         label="Duration"
         bind:value={durationString}
-        on:change={() => ($pendingPeriodTime = moment.duration(durationString))}
+        on:change={() => ($pendingPeriodTime = moment.duration(durationString).asMilliseconds())}
       />
     </Card>
     <GameClock />
@@ -35,7 +40,7 @@
     <Card padded>
       <PeriodToggle periodCount={3} bind:value={$hockeyGame.periodNumber} />
     </Card>
-    {#each $game.teams || [] as team, index}
+    {#each $hockeyGame.teams || [] as team, index}
       <Card padded class="Team">
         <Textfield
           label="Team Name"
@@ -55,13 +60,19 @@
         <ShotsOnGoal
           value={team.shotsOnGoal}
           on:change={(e) => {
-            console.log('shotsOnGoal change', { e, team });
-            $game.teams[index].shotsOnGoal = e.detail;
+            if (isHockeyGame($game)) {
+              console.log('shotsOnGoal change', { e, team });
+              $game.teams[index].shotsOnGoal = e.detail;
+            }
           }}
         />
         <PenaltyInput
           value={team.activePenalties}
-          on:change={(e) => ($game.teams[index].activePenalties = e.detail)}
+          on:change={(e) => {
+            if (isHockeyGame($game)) {
+              $game.teams[index].activePenalties = e.detail;
+            }
+          }}
         />
       </Card>
     {/each}

@@ -1,78 +1,43 @@
 <script lang="ts">
   import Button from '@smui/button';
-
+  import log from 'loglevel';
   import moment from 'moment';
-  import { game, pendingPeriodTime, horn, triggerHornFor } from 'src/lib/game.store';
+  import { game, pendingPeriodTime } from 'src/lib/game.store';
   import PeriodTime from 'src/components/PeriodTime.svelte';
-  import { onDestroy } from 'svelte';
-  import { get } from 'svelte/store';
-  const interval = 1000 / 100;
-
-  export function startPeriodTimer() {
-    let lastIntervalTime = moment();
-    return setInterval(() => {
-      const currentGame = get(game);
-      currentGame.periodTimeRemaing = currentGame.periodTimeRemaing
-        .clone()
-        .subtract(moment().diff(lastIntervalTime, 'ms'), 'ms');
-      lastIntervalTime = moment();
-      game.set({ ...currentGame });
-    }, interval);
-  }
-
-  let intervalRef: unknown;
-  $: {
-    if ($game.periodTimeRemaing.asMilliseconds() <= 0) {
-      if (intervalRef) {
-        triggerHornFor();
-      }
-      $game.periodTimeRemaing = moment.duration(0);
-      handlePause();
-    }
-  }
-  $: isRunning = !!intervalRef;
-
-  let handleStart = () => {
-    intervalRef = startPeriodTimer();
-  };
-
-  let handlePause = () => {
-    clearInterval(intervalRef as number);
-    intervalRef = undefined;
-  };
-
+  import { getTimerContext } from 'src/lib/timer.context';
+  const timer = getTimerContext();
+  let isRunning = timer.isRunning;
+  $: periodTimeRemaining = moment.duration($game.periodTimeRemaining, 'ms');
   let handleReset = () => {
     if ($pendingPeriodTime) {
-      $game.periodTimeRemaing = $pendingPeriodTime;
+      $game.periodTimeRemaining = $pendingPeriodTime;
+    } else {
+      log.error("Can't reset clock, $pendingPeriodTime is undefined");
     }
   };
 
   let handleGlobalKeypress = (e: KeyboardEvent) => {
     console.log('handleGlobalKeypress', e);
     if (e.code === 'Space') {
-      if (isRunning) {
-        handlePause();
+      if ($isRunning) {
+        timer.stop();
       } else {
-        handleStart();
+        timer.start();
       }
     } else if (e.code === 'KeyR') {
       handleReset();
     }
   };
-
-  onDestroy(() => {
-    clearInterval(intervalRef as number);
-  });
 </script>
 
 <svelte:window on:keypress|capture={handleGlobalKeypress} />
 <div class="GameClock mdc-card padded">
   <div class="display">
-    <PeriodTime value={$game.periodTimeRemaing} />
+    <PeriodTime value={periodTimeRemaining} />
   </div>
   <div class="actions">
-    <Button type="button" on:click={handleStart} disabled={isRunning || $horn}>Start</Button>
-    <Button type="button" on:click={handlePause} disabled={!isRunning}>Stop</Button>
+    <Button type="button" on:click={timer.start} disabled={$isRunning}>Start</Button>
+    <Button type="button" on:click={timer.stop} disabled={!$isRunning}>Stop</Button>
     <Button type="button" on:click={handleReset}>Reset</Button>
   </div>
 </div>

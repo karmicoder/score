@@ -6,7 +6,6 @@
   export let allowOT = true;
 
   let displayValueFn = () => {
-    console.log('...', { value, periodCount });
     if (value <= periodCount) {
       return value.toFixed(0);
     }
