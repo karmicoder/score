@@ -17,6 +17,9 @@
   };
 
   let handleGlobalKeypress = (e: KeyboardEvent) => {
+    if (e.target instanceof HTMLInputElement && !e.target.disabled) {
+      return;
+    }
     console.log('handleGlobalKeypress', e);
     if (e.code === 'Space') {
       if ($isRunning) {

@@ -25,55 +25,28 @@
 </script>
 
 <div class="HockeyControl">
-  {#if $hockeyGame}
+  {#if isHockeyGame($game)}
     <Card padded>
-      <Textfield
-        type="text"
-        name="duration"
-        label="Duration"
-        bind:value={durationString}
-        on:change={() => ($pendingPeriodTime = moment.duration(durationString).asMilliseconds())}
-      />
+      <Textfield type="text" name="duration" label="Duration" bind:value={durationString} />
     </Card>
     <GameClock />
     <HornButton />
     <Card padded>
-      <PeriodToggle periodCount={3} bind:value={$hockeyGame.periodNumber} />
+      <PeriodToggle periodCount={3} bind:value={$game.periodNumber} />
     </Card>
-    {#each $hockeyGame.teams || [] as team, index}
+    {#each $game.teams || [] as team, index}
       <Card padded class="Team">
         <Textfield
           label="Team Name"
           type="text"
           bind:value={team.name}
-          on:change={(e) => ($game.teams[index].name = e.detail)}
           class="team-name"
           required
           pattern="[A-Za-z0-9]+"
         />
-        <TeamScore
-          score={team.score}
-          on:change={(e) => {
-            $game.teams[index].score = e.detail;
-          }}
-        />
-        <ShotsOnGoal
-          value={team.shotsOnGoal}
-          on:change={(e) => {
-            if (isHockeyGame($game)) {
-              console.log('shotsOnGoal change', { e, team });
-              $game.teams[index].shotsOnGoal = e.detail;
-            }
-          }}
-        />
-        <PenaltyInput
-          value={team.activePenalties}
-          on:change={(e) => {
-            if (isHockeyGame($game)) {
-              $game.teams[index].activePenalties = e.detail;
-            }
-          }}
-        />
+        <TeamScore bind:score={team.score} />
+        <ShotsOnGoal bind:value={team.shotsOnGoal} />
+        <PenaltyInput bind:value={team.activePenalties} />
       </Card>
     {/each}
     <Leader />
