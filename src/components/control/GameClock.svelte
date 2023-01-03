@@ -17,11 +17,12 @@
   };
 
   let handleGlobalKeypress = (e: KeyboardEvent) => {
-    if (e.target instanceof HTMLInputElement && !e.target.disabled) {
+    if (e.target !== document.body) {
       return;
     }
-    console.log('handleGlobalKeypress', e);
+    console.log('handleGlobalKeypress', e.code);
     if (e.code === 'Space') {
+      e.stopPropagation();
       if ($isRunning) {
         timer.stop();
       } else {
@@ -33,7 +34,7 @@
   };
 </script>
 
-<svelte:window on:keypress|capture={handleGlobalKeypress} />
+<svelte:window on:keydown={handleGlobalKeypress} />
 <div class="GameClock mdc-card padded">
   <div class="display">
     <PeriodTime value={periodTimeRemaining} />

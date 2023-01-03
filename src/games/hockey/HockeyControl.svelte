@@ -17,6 +17,7 @@
     ? moment.duration($pendingPeriodTime).toISOString()
     : 'PT20M';
 
+  $: $pendingPeriodTime = moment.duration(durationString).asMilliseconds();
   penaltyController();
   onMount(() => {
     $pendingPeriodTime = moment.duration(20, 'minutes').asMilliseconds();
