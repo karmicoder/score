@@ -1,12 +1,14 @@
 import type { GameState } from 'src/types/game';
 import { writable } from 'svelte/store';
 
-export let game = writable<GameState>({
+let defaultGame: GameState = {
   sport: 'none',
   periodNumber: 1,
   periodTimeRemaining: 0,
   teams: []
-});
+};
+
+export let game = writable<GameState>(defaultGame);
 
 export let pendingPeriodTime = writable<number | undefined>(undefined);
 

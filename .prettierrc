@@ -4,6 +4,7 @@
   "singleQuote": true,
   "trailingComma": "none",
   "printWidth": 100,
+  "endOfLine": "lf",
   "bracketSameLine": false,
   "htmlWhitespaceSensitivity": "ignore",
   "plugins": ["prettier-plugin-svelte"],

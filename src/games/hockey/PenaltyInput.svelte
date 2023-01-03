@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import type { Penalty } from './HockeyGame';
   import Autocomplete from '@smui-extra/autocomplete';
   import { infractions, penaltyDurationFor, penaltyTypes } from './Penalty';
@@ -11,6 +10,7 @@
   import { titleCase } from 'src/lib/string';
   import { flip } from 'svelte/animate';
   import moment from 'moment';
+  import log from 'loglevel';
 
   export let value: Penalty[] = [];
   let addPenaltyForm: HTMLFormElement;
@@ -22,13 +22,13 @@
     ...emptyPenalty
   };
 
-  const dispatcher = createEventDispatcher<{ change: Penalty[] }>();
   const handleAddPenalty = (e: Event) => {
     e.preventDefault();
     if (!addPenaltyForm?.checkValidity()) {
+      log.warn('PenaltyInput invalid, not submitting');
       return;
     }
-    const newValue: Penalty[] = [
+    value = [
       ...value,
       {
         ...(newPenalty as Penalty),
@@ -37,13 +37,12 @@
         timeRemaining: penaltyDurationFor(newPenalty.type || 'minor').asMilliseconds()
       }
     ];
-    dispatcher('change', newValue);
     newPenalty = { ...emptyPenalty };
   };
   const handleDelete = (index: number) => {
     const newValue = value.slice();
     newValue.splice(index, 1);
-    dispatcher('change', newValue);
+    value = newValue;
   };
   $: sortedInfractions = infractions.sort();
 </script>

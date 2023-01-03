@@ -42,7 +42,6 @@ export function createTimerContext(contextName = 'timer') {
     },
     isRunning
   };
-  log.debug('setting TimerContext ' + contextName, get(timer.isRunning));
   setContext(contextName, timer);
 
   onDestroy(() => {
